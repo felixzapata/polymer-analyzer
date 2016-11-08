@@ -16,6 +16,7 @@ import * as dom5 from 'dom5';
 import {resolve as resolveUrl} from 'url';
 
 import {ScannedImport} from '../model/model';
+import {ScanResult} from '../scanning/scanner';
 
 import {HtmlVisitor, ParsedHtmlDocument} from './html-document';
 import {HtmlScanner} from './html-scanner';
@@ -46,8 +47,7 @@ export class HtmlImportScanner implements HtmlScanner {
 
   async scan(
       document: ParsedHtmlDocument,
-      visit: (visitor: HtmlVisitor) => Promise<void>):
-      Promise<ScannedImport[]> {
+      visit: (visitor: HtmlVisitor) => Promise<void>): Promise<ScanResult> {
     const imports: ScannedImport[] = [];
 
     await visit((node) => {
@@ -74,6 +74,6 @@ export class HtmlImportScanner implements HtmlScanner {
         }
       }
     }
-    return imports;
+    return {features: imports, warnings: []};
   }
 }

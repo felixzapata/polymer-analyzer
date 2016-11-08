@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   * Warn, don't throw when a behavior is declared twice.
   * Warn when there's a problem mixing behaviors into other behaviors, the same way that we warn when mixing behaviors into elements.
 
+### Added
+* Initial support for parsing [A-Frame](https://aframe.io/) components, starting with warning about incorrect component registrations.
+
 ## [2.0.0-alpha.17] - 2016-10-28 - [minor]
 
 ### Added

@@ -16,6 +16,7 @@
 
 import * as path from 'path';
 
+import {ComponentScanner as AFrameComponentScanner} from './a-frame/component-scanner';
 import {CssParser} from './css/css-parser';
 import {HtmlCustomElementReferenceScanner} from './html/html-element-reference-scanner';
 import {HtmlImportScanner} from './html/html-import-scanner';
@@ -105,7 +106,7 @@ export class Analyzer {
         'js',
         [
           new PolymerElementScanner(), new BehaviorScanner(),
-          new VanillaElementScanner()
+          new VanillaElementScanner(), new AFrameComponentScanner()
         ]
       ],
     ]);
@@ -263,8 +264,9 @@ export class Analyzer {
   private async _scanDocument(
       document: ParsedDocument<any, any>,
       maybeAttachedComment?: string): Promise<ScannedDocument> {
-    const warnings: Warning[] = [];
-    const scannedFeatures = await this._getScannedFeatures(document);
+    const scanningResult = await this._getScannedFeatures(document);
+    const scannedFeatures = scanningResult.features;
+    const warnings: Warning[] = scanningResult.warnings;
     // If there's an HTML comment that applies to this document then we assume
     // that it applies to the first feature.
     const firstScannedFeature = scannedFeatures[0];
@@ -418,13 +420,12 @@ export class Analyzer {
     }
   }
 
-  private async _getScannedFeatures(document: ParsedDocument<any, any>):
-      Promise<ScannedFeature[]> {
+  private async _getScannedFeatures(document: ParsedDocument<any, any>) {
     const scanners = this._scanners.get(document.type);
     if (scanners) {
       return scan(document, scanners);
     }
-    return [];
+    return {features: [], warnings: []};
   }
 
   /**

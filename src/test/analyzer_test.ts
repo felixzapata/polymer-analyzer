@@ -354,8 +354,8 @@ suite('Analyzer', () => {
           <link rel="stylesheet" href="foo.css"></link>
         </head></html>`;
       const document = new HtmlParser().parse(contents, 'test.html');
-      const features =
-          <ScannedImport[]>(await analyzer['_getScannedFeatures'](document));
+      const features = (await analyzer['_getScannedFeatures'](document))
+                           .features as ScannedImport[];
       assert.deepEqual(
           features.map(e => e.type),
           ['html-import', 'html-script', 'html-style']);
@@ -374,9 +374,9 @@ suite('Analyzer', () => {
           </dom-module>
         </body></html>`;
       const document = new HtmlParser().parse(contents, 'test.html');
-      const features =
-          <ScannedImport[]>(await analyzer['_getScannedFeatures'](document))
-              .filter(e => e instanceof ScannedImport);
+      const features = ((await analyzer['_getScannedFeatures'](document))
+                            .features as ScannedImport[])
+                           .filter(e => e instanceof ScannedImport);
       assert.equal(features.length, 1);
       assert.equal(features[0].type, 'css-import');
       assert.equal(features[0].url, 'bar.css');
@@ -388,8 +388,8 @@ suite('Analyzer', () => {
           <style>body { color: red; }</style>
         </head></html>`;
       const document = new HtmlParser().parse(contents, 'test.html');
-      const features = <ScannedInlineDocument[]>(
-          await analyzer['_getScannedFeatures'](document));
+      const features = (await analyzer['_getScannedFeatures'](document))
+                           .features as ScannedInlineDocument[];
 
       assert.equal(features.length, 2);
       assert.instanceOf(features[0], ScannedInlineDocument);
